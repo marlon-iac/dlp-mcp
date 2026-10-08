@@ -160,8 +160,8 @@ uv publish --dry-run
 4. Ensure `ruff`, `mypy`, and `pytest` pass.
 5. Open a PR describing the change.
 
-See [AGENTS.md](AGENTS.md) for agent-oriented instructions.
 
 ## License
 
 MIT - see [LICENSE](LICENSE).
+
