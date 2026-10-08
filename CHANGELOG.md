@@ -4,6 +4,11 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.2] - 2026-10-08
+
+### Changed
+- Removed AGENTS.md reference from README.
+
 ## [0.1.0] - 2026-10-05
 
 ### Added
@@ -22,3 +27,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - README with install, tools table, env vars, troubleshooting.
 - AGENTS.md for LLM-driven development.
 - MIT license.
+
