@@ -2,30 +2,26 @@
 
 [![PyPI](https://img.shields.io/pypi/v/dlp-invest-mcp)](https://pypi.org/project/dlp-invest-mcp/)
 [![Python](https://img.shields.io/pypi/pyversions/dlp-invest-mcp)](https://pypi.org/project/dlp-invest-mcp/)
-[![License](https://img.shields.io/pypi/l/dlp-invest-mcp)](https://github.com/marlo/dlp-invest-mcp/blob/main/LICENSE)
-[![CI](https://github.com/marlo/dlp-invest-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/marlo/dlp-invest-mcp/actions/workflows/ci.yml)
+[![License](https://img.shields.io/pypi/l/dlp-invest-mcp)](https://github.com/marlo-iac/dlp-mcp/blob/main/LICENSE)
+[![CI](https://github.com/marlo-iac/dlp-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/marlo-iac/dlp-mcp/actions/workflows/ci.yml)
 
-MCP (Model Context Protocol) server exposing your **DLPInvest** portfolio as tools for AI clients - Claude Desktop, Cursor, Claude Code, and any MCP-compatible client.
+MCP (Model Context Protocol) server exposing your **DLPInvest** portfolio as tools for AI assistants — Claude Desktop, Cursor, Claude Code, Windsurf, and any MCP-compatible client.
 
 ## What is this?
 
-[MCP](https://modelcontextprotocol.io) is an open protocol that lets AI models call external tools. This package is a stdio MCP server that talks to the DLPInvest REST API on your behalf. Once configured, an AI assistant can query your positions, trades, dividends, and more - without you writing a single line of code.
+[MCP](https://modelcontextprotocol.io) is an open protocol that lets AI assistants interact with external tools and data sources. 
 
-**Features:**
+This package enables your AI to safely read and query your DLPInvest investment portfolio (positions, trades, statements, dividends, performance) in real-time, **without writing code or running installation scripts**.
 
-- 11 ready-to-use tools covering operations, portfolio, positions, returns, statement, dividends, assets, brokerages, strategies, and sub-strategies.
-- Runs over **stdio** (JSON-RPC), the most portable MCP transport.
-- Installable via `uvx`, `pip`, or `uv` - no Python knowledge required on the client side.
+---
 
-## Quick install
+## Quick Setup (Zero Terminal Commands)
 
-### Option 1 (recommended): `uvx` + client config
+You do **not** need to install Python packages manually. Just add the configuration block below to your AI client's settings.
 
-Install [uv](https://github.com/astral-sh/uv) once, then paste the JSON block for your client below.
+### Cursor
 
-#### Claude Desktop
-
-Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%AppData%/Claude/claude_desktop_config.json` (Windows):
+Add to `.cursor/mcp.json` in your project root or in your global Cursor settings:
 
 ```json
 {
@@ -41,9 +37,11 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
 }
 ```
 
-#### Cursor
+### Claude Desktop
 
-Add to `.cursor/mcp.json` in your project:
+Paste into your configuration file:
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 
 ```json
 {
@@ -59,109 +57,59 @@ Add to `.cursor/mcp.json` in your project:
 }
 ```
 
-#### Claude Code
+### Claude Code
+
+Run once:
 
 ```bash
 claude mcp add dlp-invest --scope user --env DLP_INVEST_API_TOKEN=DLP-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -- uvx dlp-invest-mcp
 ```
 
-### Option 2: `pip` + manual run
+> **Requirement:** Requires [uv](https://docs.astral.sh/uv/) installed on your machine (`uvx` is included automatically with uv).
 
-```bash
-pip install dlp-invest-mcp
-dlp-invest-mcp
-```
+---
 
-Then configure your client to run `dlp-invest-mcp` as the command.
+## Available Tools
 
-## Available tools
+Once configured, your AI assistant automatically gains access to 11 financial tools:
 
-| Tool | Description | Key parameters |
+| Tool | Description | Key Parameters |
 | --- | --- | --- |
 | `obter_operacoes` | List operations/trades | `carteira`, `status`, `data_inicial`, `data_final`, `limite`, `offset` |
-| `obter_carteira` | Portfolio metadata | - |
-| `obter_posicao` | Current holdings | `carteira` |
-| `obter_rentabilidade` | Returns over a period | `carteira`, `data_inicial`, `data_final` |
-| `obter_extrato` | Financial statement | `carteira`, `data_inicial`, `data_final`, `limite`, `offset` |
-| `obter_proventos` | Dividends & income | `carteira`, `data_inicial`, `data_final` |
-| `obter_ativos` | List all assets | - |
-| `obter_ativos_detalhes` | Asset details by ticker | `ticker` (required) |
-| `obter_corretoras` | List brokerages | - |
-| `obter_estrategias` | List strategies | - |
-| `obter_subestrategias` | List sub-strategies | - |
+| `obter_carteira` | Retrieve portfolio summary | — |
+| `obter_posicao` | Current asset holdings | `carteira` |
+| `obter_rentabilidade` | Portfolio returns over a period | `carteira`, `data_inicial`, `data_final` |
+| `obter_extrato` | Financial transactions statement | `carteira`, `data_inicial`, `data_final`, `limite`, `offset` |
+| `obter_proventos` | Dividends & income received | `carteira`, `data_inicial`, `data_final` |
+| `obter_ativos` | List available assets | — |
+| `obter_ativos_detalhes` | Asset details by ticker | `ticker` (required, e.g. PETR4) |
+| `obter_corretoras` | List registered brokerages | — |
+| `obter_estrategias` | List investment strategies | — |
+| `obter_subestrategias` | List sub-strategies | — |
 
-### Example
+---
 
-> What's my current position?
-
-The AI calls `obter_posicao` and returns your holdings in real time.
-
-## Environment variables
+## Environment Variables
 
 | Variable | Default | Required | Description |
 | --- | --- | --- | --- |
-| `DLP_INVEST_API_TOKEN` | *(empty)* | No | DLPInvest API token (Bearer). Leave empty to disable requests; tools will return a clear error. |
+| `DLP_INVEST_API_TOKEN` | *(empty)* | Recommended | Your DLPInvest API token. If omitted, queries return a clear notice asking for the token. |
 | `DLP_INVEST_API_BASE_URL` | `https://users.dlpinvest.com.br` | No | Base URL of the DLPInvest REST API. |
-| `DLP_INVEST_REQUEST_TIMEOUT_SECONDS` | `30` | No | HTTP request timeout in seconds. |
+| `DLP_INVEST_REQUEST_TIMEOUT_SECONDS` | `30` | No | Timeout in seconds for HTTP requests. |
 
-Settings can also be placed in a `.env` file in the working directory.
-
-## Development
-
-```bash
-# Clone
-git clone https://github.com/marlo/dlp-invest-mcp
-cd dlp-invest-mcp
-
-# Install uv (https://github.com/astral-sh/uv)
-# Then:
-uv sync                    # install dependencies + dev tools
-
-uv run ruff check .        # lint
-uv run ruff format .       # format
-uv run mypy src            # type check
-uv run pytest -q           # tests
-uv run dlp-invest-mcp      # run server locally
-```
-
-### Build a local wheel
-
-```bash
-uv build
-```
-
-Artifacts land in `dist/`. Test install:
-
-```bash
-uv pip install dist/dlp_invest_mcp-0.1.0-py3-none-any.whl
-```
-
-### Dry-run publish
-
-```bash
-uv publish --dry-run
-```
+---
 
 ## Troubleshooting
 
-| Problem | Likely cause | Fix |
+| Problem | Cause | Solution |
 | --- | --- | --- |
-| `uvx: command not found` | `uv` not installed | Install uv: `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
-| Tools return "Token de API nao configurado" | `DLP_INVEST_API_TOKEN` missing | Add the env var in your client config or a `.env` file |
-| No tools appear in client | Wrong command in client config | Use `uvx dlp-invest-mcp` (not `python ...`) |
-| JSON-RPC errors on stdout | Logging writes to stdout | This package logs to stderr only - ensure you did not redirect stderr |
-| Timeout / connection errors | Network or wrong base URL | Check `DLP_INVEST_API_BASE_URL` and network access |
+| `uvx: command not found` | `uv` is not installed | Install `uv` once on your machine ([uv installation guide](https://docs.astral.sh/uv/getting-started/installation/)). |
+| "Token de API nao configurado" | `DLP_INVEST_API_TOKEN` missing | Add your token in the `env` section of your MCP configuration JSON. |
+| Tools don't appear in AI client | Incorrect configuration JSON | Ensure the JSON is saved inside your client's config file and restart the client. |
 
-## Contributing
-
-1. Fork the repo and create a branch.
-2. Run `uv sync` to install dev dependencies.
-3. Add tests for any new tool.
-4. Ensure `ruff`, `mypy`, and `pytest` pass.
-5. Open a PR describing the change.
-
+---
 
 ## License
 
-MIT - see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).
 

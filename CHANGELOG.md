@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.3] - 2026-10-09
+
+### Changed
+- Refactored README to focus on zero-install via uvx.
+- Removed manual pip installation instructions for end-users.
+
 ## [0.1.2] - 2026-10-08
 
 ### Changed
@@ -27,4 +33,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - README with install, tools table, env vars, troubleshooting.
 - AGENTS.md for LLM-driven development.
 - MIT license.
+
 
