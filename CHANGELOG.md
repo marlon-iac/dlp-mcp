@@ -4,6 +4,13 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.5] - 2026-10-09
+
+### Added
+- Transparently handle UV_LINK_MODE=copy in code to prevent Windows hardlink errors.
+- Promoted uv installation prerequisite to the top of README.
+- Simplified JSON configuration block for end-users.
+
 ## [0.1.4] - 2026-10-09
 
 ### Added
@@ -38,6 +45,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - README with install, tools table, env vars, troubleshooting.
 - AGENTS.md for LLM-driven development.
 - MIT license.
+
 
 
 

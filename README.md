@@ -7,21 +7,31 @@
 
 MCP (Model Context Protocol) server exposing your **DLPInvest** portfolio as tools for AI assistants — Claude Desktop, Cursor, Claude Code, Windsurf, and any MCP-compatible client.
 
-## What is this?
+---
 
-[MCP](https://modelcontextprotocol.io) is an open protocol that lets AI assistants interact with external tools and data sources. 
+## ⚠️ Pré-requisito importante
 
-This package enables your AI to safely read and query your DLPInvest investment portfolio (positions, trades, statements, dividends, performance) in real-time, **without writing code or running installation scripts**.
+Antes de configurar o MCP, certifique-se de ter o **`uv`** instalado em sua máquina. O `uv` é a ferramenta moderna e ultrarrápida que gerencia e executa este servidor automaticamente em segundo plano.
+
+- **Se você usa Windows (PowerShell):**
+  ```powershell
+  powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+  ```
+- **Se você usa macOS / Linux:**
+  ```bash
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  ```
+*(Se já tiver o uv instalado, você pode ignorar este passo).*
 
 ---
 
-## Quick Setup (Zero Terminal Commands)
+## Configuração Rápida (Sem comandos de terminal)
 
-You do **not** need to install Python packages manually. Just add the configuration block below to your AI client's settings.
+Basta adicionar o bloco de configuração abaixo no arquivo de configuração da sua IDE ou assistente de IA, substituindo `DLP-seu-token-aqui` pelo seu token da API do DLPInvest.
 
 ### Cursor
 
-Add to `.cursor/mcp.json` in your project root or in your global Cursor settings:
+Adicione em `.cursor/mcp.json` (na raiz do projeto ou nas configurações globais):
 
 ```json
 {
@@ -30,8 +40,7 @@ Add to `.cursor/mcp.json` in your project root or in your global Cursor settings
       "command": "uvx",
       "args": ["dlp-invest-mcp"],
       "env": {
-        "DLP_INVEST_API_TOKEN": "DLP-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        "UV_LINK_MODE": "copy"
+        "DLP_INVEST_API_TOKEN": "DLP-seu-token-aqui"
       }
     }
   }
@@ -40,7 +49,7 @@ Add to `.cursor/mcp.json` in your project root or in your global Cursor settings
 
 ### Claude Desktop
 
-Paste into your configuration file:
+Cole no arquivo de configuração do Claude:
 - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 
@@ -51,29 +60,18 @@ Paste into your configuration file:
       "command": "uvx",
       "args": ["dlp-invest-mcp"],
       "env": {
-        "DLP_INVEST_API_TOKEN": "DLP-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        "UV_LINK_MODE": "copy"
+        "DLP_INVEST_API_TOKEN": "DLP-seu-token-aqui"
       }
     }
   }
 }
 ```
 
-### Claude Code
-
-Run once:
-
-```bash
-claude mcp add dlp-invest --scope user --env DLP_INVEST_API_TOKEN=DLP-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -- uvx dlp-invest-mcp
-```
-
-> **Requirement:** Requires [uv](https://docs.astral.sh/uv/) installed on your machine (`uvx` is included automatically with uv).
-
 ---
 
-## Available Tools
+## Ferramentas Disponíveis
 
-Once configured, your AI assistant automatically gains access to 11 financial tools:
+O assistente de IA terá acesso automático a 11 ferramentas financeiras:
 
 | Tool | Description | Key Parameters |
 | --- | --- | --- |
@@ -91,28 +89,15 @@ Once configured, your AI assistant automatically gains access to 11 financial to
 
 ---
 
-## Environment Variables
+## Variáveis de Ambiente
 
 | Variable | Default | Required | Description |
 | --- | --- | --- | --- |
-| `DLP_INVEST_API_TOKEN` | *(empty)* | Recommended | Your DLPInvest API token. If omitted, queries return a clear notice asking for the token. |
+| `DLP_INVEST_API_TOKEN` | *(empty)* | Recommended | Your DLPInvest API token. |
 | `DLP_INVEST_API_BASE_URL` | `https://users.dlpinvest.com.br` | No | Base URL of the DLPInvest REST API. |
-| `DLP_INVEST_REQUEST_TIMEOUT_SECONDS` | `30` | No | Timeout in seconds for HTTP requests. |
 
 ---
 
-## Troubleshooting
-
-| Problem | Cause | Solution |
-| --- | --- | --- |
-| `uvx: command not found` | `uv` is not installed | Install `uv` once on your machine ([uv installation guide](https://docs.astral.sh/uv/getting-started/installation/)). |
-| "Token de API nao configurado" | `DLP_INVEST_API_TOKEN` missing | Add your token in the `env` section of your MCP configuration JSON. |
-| Tools don't appear in AI client | Incorrect configuration JSON | Ensure the JSON is saved inside your client's config file and restart the client. |
-
----
-
-## License
+## Licença
 
 MIT — see [LICENSE](LICENSE).
-
-
