@@ -30,7 +30,8 @@ Add to `.cursor/mcp.json` in your project root or in your global Cursor settings
       "command": "uvx",
       "args": ["dlp-invest-mcp"],
       "env": {
-        "DLP_INVEST_API_TOKEN": "DLP-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        "DLP_INVEST_API_TOKEN": "DLP-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "UV_LINK_MODE": "copy"
       }
     }
   }
@@ -50,7 +51,8 @@ Paste into your configuration file:
       "command": "uvx",
       "args": ["dlp-invest-mcp"],
       "env": {
-        "DLP_INVEST_API_TOKEN": "DLP-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        "DLP_INVEST_API_TOKEN": "DLP-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "UV_LINK_MODE": "copy"
       }
     }
   }
@@ -112,4 +114,5 @@ Once configured, your AI assistant automatically gains access to 11 financial to
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
 
