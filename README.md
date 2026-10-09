@@ -98,6 +98,48 @@ O assistente de IA terá acesso automático a 11 ferramentas financeiras:
 
 ---
 
+## ⚠️ Solução de Problemas (Windows / OneDrive)
+
+Se você está no Windows e o Cursor/Antigravity falha ao instalar o pacote com o erro `os error 396` (hardlink incompatível), é porque o `uv` tenta criar links físicos em pastas que estão sincronizadas na nuvem (OneDrive, Google Drive) ou em particionamentos diferentes.
+
+**Solução:** Adicione a variável de ambiente `"UV_LINK_MODE": "copy"` no bloco de configuração do seu cliente. Isso força o `uv` a fazer cópias normais em vez de hardlinks.
+
+### Cursor (`.cursor/mcp.json`)
+
+```json
+{
+  "mcpServers": {
+    "dlp-invest": {
+      "command": "uvx",
+      "args": ["dlp-invest-mcp"],
+      "env": {
+        "DLP_INVEST_API_TOKEN": "DLP-seu-token-aqui",
+        "UV_LINK_MODE": "copy"
+      }
+    }
+  }
+}
+```
+
+### Claude Desktop (`claude_desktop_config.json`)
+
+```json
+{
+  "mcpServers": {
+    "dlp-invest": {
+      "command": "uvx",
+      "args": ["dlp-invest-mcp"],
+      "env": {
+        "DLP_INVEST_API_TOKEN": "DLP-seu-token-aqui",
+        "UV_LINK_MODE": "copy"
+      }
+    }
+  }
+}
+```
+
+---
+
 ## Licença
 
 MIT — see [LICENSE](LICENSE).
