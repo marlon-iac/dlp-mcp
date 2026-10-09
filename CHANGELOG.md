@@ -4,7 +4,17 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.7] - 2026-10-09
+
+### Changed
+- Corrected local development configuration example to point to built wheel file instead of project directory.
+
 ## [0.1.6] - 2026-10-09
+
+### Added
+- Added test_installation.py to verify wheel build and uvx startup before releases.
+- Added Cursor local development and remote configuration examples to README.
+- Documented --link-mode copy CLI argument for Windows OneDrive compatibility.
 
 ### Added
 - Added explicit UV_LINK_MODE=copy workaround for Windows/OneDrive hardlink errors.
@@ -50,6 +60,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - README with install, tools table, env vars, troubleshooting.
 - AGENTS.md for LLM-driven development.
 - MIT license.
+
+
 
 
 
