@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/pypi/l/dlp-invest-mcp)](https://github.com/marlo-iac/dlp-mcp/blob/main/LICENSE)
 [![CI](https://github.com/marlo/dlp-invest-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/marlo/dlp-invest-mcp/actions/workflows/ci.yml)
 
-MCP (Model Context Protocol) server exposing your **DLPInvest** portfolio as tools for AI assistants — Claude Desktop, Cursor, Claude Code, Windsurf, and any MCP-compatible client.
+Servidor MCP (Model Context Protocol) que expõe a sua carteira da **DLPInvest** como ferramentas para assistentes de IA — Claude Desktop, Cursor, Claude Code, Windsurf e qualquer cliente compatível com MCP.
 
 ---
 
@@ -13,14 +13,7 @@ MCP (Model Context Protocol) server exposing your **DLPInvest** portfolio as too
 
 Antes de configurar o MCP, certifique-se de ter o **`uv`** instalado em sua máquina. O `uv` é a ferramenta moderna e ultrarrápida que gerencia e executa este servidor automaticamente em segundo plano.
 
-- **Windows (PowerShell):**
-  ```powershell
-  powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
-  ```
-- **macOS / Linux:**
-  ```bash
-  curl -LsSf https://astral.sh/uv/install.sh | sh
-  ```
+📖 Veja como instalar na documentação oficial: [https://docs.astral.sh/uv/getting-started/installation/](https://docs.astral.sh/uv/getting-started/installation/)
 
 ---
 
@@ -53,7 +46,7 @@ Baixa e executa a última versão publicada no PyPI.
   "mcpServers": {
     "dlp-invest-local": {
       "command": "uvx",
-      "args": ["--from", "C:/caminho/para/dlp-invest-mcp/dist/dlp_invest_mcp-0.1.6-py3-none-any.whl", "dlp-invest-mcp"],
+      "args": ["--from", "C:/caminho/para/dlp-invest-mcp/dist/dlp_invest_mcp-0.1.7-py3-none-any.whl", "dlp-invest-mcp"],
       "env": {
         "DLP_INVEST_API_TOKEN": "DLP-seu-token-aqui"
       }
@@ -93,5 +86,4 @@ O assistente de IA terá acesso automático a 11 ferramentas financeiras:
 
 ## Licença
 
-MIT — see [LICENSE](LICENSE).
-
+MIT — veja [LICENSE](LICENSE).
