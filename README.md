@@ -18,20 +18,69 @@ Antes de configurar o MCP, certifique-se de ter o `**uv**` instalado.
 
 ## ⚡ Como usar
 
-1. **Instalar**
+### Instalação
 
 ```bash
 uvx dlp-invest-mcp
 ```
 
-No Windows/OneDrive, use o script de instalação que aplica `--link-mode copy` automaticamente:
+**No Windows/OneDrive**, defina a variável de ambiente `UV_LINK_MODE=copy` para evitar erros de hardlink (código 396). Isso é suportado nativamente pelo `uv` e não requer scripts auxiliares.
 
-```bash
-# PowerShell
-./scripts/install-dlp-invest-mcp.ps1
+#### Via ambiente:
+
+**PowerShell:**
+```powershell
+$env:UV_LINK_MODE="copy"
+uvx dlp-invest-mcp
 ```
 
-1. **Configurar o MCP**
+**Linux/macOS:**
+```bash
+export UV_LINK_MODE="copy"
+uvx dlp-invest-mcp
+```
+
+#### Via configuração do cliente (Cursor, Claude, OpenCode)
+
+Adicione `UV_LINK_MODE: "copy"` ao bloco de ambiente do seu cliente:
+
+**Cursor (`~/.cursor/mcp.json` ou `.cursor/mcp.json`):**
+```json
+{
+  "mcpServers": {
+    "dlp-invest": {
+      "command": "uvx",
+      "args": ["dlp-invest-mcp"],
+      "env": {
+        "DLP_INVEST_API_TOKEN": "DLP-seu-token-aqui",
+        "UV_LINK_MODE": "copy"
+      }
+    }
+  }
+}
+```
+
+**Claude Desktop (`claude_desktop_config.json`):**
+```json
+{
+  "mcpServers": {
+    "dlp-invest": {
+      "command": "uvx",
+      "args": ["dlp-invest-mcp"],
+      "env": {
+        "DLP_INVEST_API_TOKEN": "DLP-seu-token-aqui",
+        "UV_LINK_MODE": "copy"
+      }
+    }
+  }
+}
+```
+
+**OpenCode:** Adapte conforme o formato do seu configuração de ambiente.
+
+---
+
+### Configurar o MCP
 
 Copie o exemplo abaixo para o arquivo de configuração do seu IDE e substitua `DLP-seu-token-aqui`.
 
