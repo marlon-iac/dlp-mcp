@@ -20,13 +20,7 @@ Antes de configurar o MCP, certifique-se de ter o `**uv**` instalado.
 
 ### Instalação
 
-```bash
-uvx dlp-invest-mcp
-```
-
-**No Windows/OneDrive**, defina a variável de ambiente `UV_LINK_MODE=copy` para evitar erros de hardlink (código 396). Isso é suportado nativamente pelo `uv` e não requer scripts auxiliares.
-
-#### Via ambiente:
+**No Windows**, defina a variável de ambiente `UV_LINK_MODE=copy` para evitar erros de hardlink.
 
 **PowerShell:**
 ```powershell
@@ -39,46 +33,6 @@ uvx dlp-invest-mcp
 export UV_LINK_MODE="copy"
 uvx dlp-invest-mcp
 ```
-
-#### Via configuração do cliente (Cursor, Claude, OpenCode)
-
-Adicione `UV_LINK_MODE: "copy"` ao bloco de ambiente do seu cliente:
-
-**Cursor (`~/.cursor/mcp.json` ou `.cursor/mcp.json`):**
-```json
-{
-  "mcpServers": {
-    "dlp-invest": {
-      "command": "uvx",
-      "args": ["dlp-invest-mcp"],
-      "env": {
-        "DLP_INVEST_API_TOKEN": "DLP-seu-token-aqui",
-        "UV_LINK_MODE": "copy"
-      }
-    }
-  }
-}
-```
-
-**Claude Desktop (`claude_desktop_config.json`):**
-```json
-{
-  "mcpServers": {
-    "dlp-invest": {
-      "command": "uvx",
-      "args": ["dlp-invest-mcp"],
-      "env": {
-        "DLP_INVEST_API_TOKEN": "DLP-seu-token-aqui",
-        "UV_LINK_MODE": "copy"
-      }
-    }
-  }
-}
-```
-
-**OpenCode:** Adapte conforme o formato do seu configuração de ambiente.
-
----
 
 ### Configurar o MCP
 
@@ -99,10 +53,6 @@ Copie o exemplo abaixo para o arquivo de configuração do seu IDE e substitua `
   }
 }
 ```
-
-### Gemini / OpenCode
-
-Adapte o exemplo do Cursor para o arquivo de configuração do seu IDE. O comando permanece `uvx dlp-invest-mcp` e a variável `DLP_INVEST_API_TOKEN` deve estar definida.
 
 ---
 
