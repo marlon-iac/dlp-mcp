@@ -9,21 +9,30 @@ Stack: Python 3.10+, `mcp` SDK (MCPServer), `pydantic-settings`, stdlib `urllib`
 Target users: AI clients (Claude Desktop, Cursor, Claude Code).
 
 - When you need to search docs, use `context7` tools.
-- If you are unsure how to do something, use `gh_grep` to search code examples from GitHub.
+- If unsure how to do something, use `gh_grep` to search code examples from GitHub.
 
+## Issue tracker
+
+Issues are tracked on GitHub at https://github.com/marlo/dlp-invest-mcp/issues.
+See `docs/agents/issue-tracker.md` for triage flow.
+
+## Domain docs
+
+Single-context layout. All domain documentation (`GLOSSARY.md`, `docs/adr/`) lives at the repository root.
+See `docs/agents/domain.md` for consumption rules.
 
 ## Directory layout
 
 ```
 src/dlp_invest_mcp/
-├── __init__.py      # version
-├── __main__.py      # python -m entry
-├── server.py        # MCPServer + tool decorators + UV_LINK_MODE fix
-├── config.py        # pydantic-settings (env vars)
-├── tools/           # one file per business-logic function
-└── utils/
-    └── http.py      # make_request() helper
-tests/               # pytest suite (unit + installation integration)
+├ __init__.py      # version
+├ __main__.py      # python -m entry
+├ server.py        # MCPServer + tool decorators + UV_LINK_MODE fix
+├ config.py        # pydantic-settings (env vars)
+├ tools/           # one file per business-logic function
+└ utils/
+    └ http.py      # make_request() helper
+tests/               # pytest suite (unit + integration tests)
 ```
 
 ## Canonical commands
@@ -48,8 +57,7 @@ uv run dlp-invest-mcp      # run server locally
 
 ## GOLDEN RULE: No Blind Releases
 
-**NEVER create a release tag or publish to PyPI without verifying the exact installation artifact locally.** 
-The release process is NOT for testing. Tests must pass locally in a simulated production environment first.
+**NEVER** create a release tag or publish to PyPI without verifying the exact installation artifact locally. The release process is NOT for testing. Tests must pass locally in a simulated production environment first.
 
 ## Pre-commit checklist
 

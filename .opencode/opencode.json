@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "dlp-invest": {
+      "command": "uvx",
+      "enabled": true,
+      "args": ["dlp-invest-mcp"],
+      "env": {
+        "DLP_INVEST_API_TOKEN": "${DLP_INVEST_API_TOKEN}"
+      }
+    }
+  }
+}

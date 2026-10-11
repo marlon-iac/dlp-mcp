@@ -84,17 +84,17 @@ def test_server_lists_tools() -> None:
     tools = list_response["result"]["tools"]
     names = {t["name"] for t in tools}
     expected = {
-        "obter_operacoes_tool",
-        "obter_carteira_tool",
-        "obter_posicao_tool",
-        "obter_rentabilidade_tool",
-        "obter_extrato_tool",
-        "obter_proventos_tool",
-        "obter_ativos_tool",
-        "obter_ativos_detalhes_tool",
-        "obter_corretoras_tool",
-        "obter_estrategias_tool",
-        "obter_subestrategias_tool",
+        "obter_operacoes",
+        "obter_carteira",
+        "obter_posicao",
+        "obter_rentabilidade",
+        "obter_extrato",
+        "obter_proventos",
+        "obter_ativos",
+        "obter_ativos_detalhes",
+        "obter_corretoras",
+        "obter_estrategias",
+        "obter_subestrategias",
     }
     missing = expected - names
     assert not missing, f"Missing tools: {missing}"

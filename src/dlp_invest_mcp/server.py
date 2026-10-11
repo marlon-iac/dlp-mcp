@@ -4,7 +4,6 @@ Uses the official ``mcp`` SDK (MCPServer) over stdio.
 All tools are registered with ``@server.tool()``.
 Logging goes to **stderr**; stdout is reserved for JSON-RPC.
 """
-
 from __future__ import annotations
 
 import asyncio
@@ -12,9 +11,6 @@ import logging
 import os
 import sys
 from typing import Any
-
-# Força o uv a usar cópias em vez de hardlinks no Windows, evitando o erro de nuvem/partições (os error 396)
-os.environ.setdefault("UV_LINK_MODE", "copy")
 
 from mcp.server.mcpserver import MCPServer
 
@@ -57,7 +53,7 @@ server = MCPServer(
 
 
 @server.tool()
-def obter_operacoes_tool(
+def obter_operacoes(
     carteira: str | None = None,
     status: str | None = None,
     data_inicial: str | None = None,
@@ -66,17 +62,7 @@ def obter_operacoes_tool(
     offset: int = 0,
 ) -> dict[str, Any]:
     """Recupera a lista de operacoes do sistema DLPInvest.
-
-    Args:
-        carteira: ID ou nome da carteira para filtrar.
-        status: Status da operacao (aberta, fechada, pendente).
-        data_inicial: Data inicial no formato YYYY-MM-DD.
-        data_final: Data final no formato YYYY-MM-DD.
-        limite: Maximo de resultados a retornar.
-        offset: Paginacao (quantidade de itens a pular).
-
-    Returns:
-        Dict with ``success`` and either ``data`` or ``error``.
+    ...
     """
     return obter_operacoes(
         carteira=carteira,
@@ -89,43 +75,29 @@ def obter_operacoes_tool(
 
 
 @server.tool()
-def obter_carteira_tool() -> dict[str, Any]:
+def obter_carteira() -> dict[str, Any]:
     """Recupera informacoes da carteira do usuario.
-
-    Returns:
-        Dict with ``success`` and either ``data`` or ``error``.
+    ...
     """
     return obter_carteira()
 
 
 @server.tool()
-def obter_posicao_tool(carteira: str | None = None) -> dict[str, Any]:
+def obter_posicao(carteira: str | None = None) -> dict[str, Any]:
     """Recupera a posicao atual dos ativos na carteira.
-
-    Args:
-        carteira: ID ou nome da carteira.
-
-    Returns:
-        Dict with ``success`` and either ``data`` or ``error``.
+    ...
     """
-    return obter_posicao(carteira=carteira)
+    return obter_posicao(carreira=carteira)
 
 
 @server.tool()
-def obter_rentabilidade_tool(
+def obter_rentabilidade(
     carteira: str | None = None,
     data_inicial: str | None = None,
     data_final: str | None = None,
 ) -> dict[str, Any]:
     """Recupera a rentabilidade da carteira em um periodo.
-
-    Args:
-        carteira: ID ou nome da carteira.
-        data_inicial: Data inicial no formato YYYY-MM-DD.
-        data_final: Data final no formato YYYY-MM-DD.
-
-    Returns:
-        Dict with ``success`` and either ``data`` or ``error``.
+    ...
     """
     return obter_rentabilidade(
         carteira=carteira,
@@ -135,7 +107,7 @@ def obter_rentabilidade_tool(
 
 
 @server.tool()
-def obter_extrato_tool(
+def obter_extrato(
     carteira: str | None = None,
     data_inicial: str | None = None,
     data_final: str | None = None,
@@ -143,16 +115,7 @@ def obter_extrato_tool(
     offset: int = 0,
 ) -> dict[str, Any]:
     """Recupera o extrato financeiro da carteira.
-
-    Args:
-        carteira: ID ou nome da carteira.
-        data_inicial: Data inicial no formato YYYY-MM-DD.
-        data_final: Data final no formato YYYY-MM-DD.
-        limite: Maximo de resultados.
-        offset: Paginacao.
-
-    Returns:
-        Dict with ``success`` and either ``data`` or ``error``.
+    ...
     """
     return obter_extrato(
         carteira=carteira,
@@ -164,20 +127,13 @@ def obter_extrato_tool(
 
 
 @server.tool()
-def obter_proventos_tool(
+def obter_proventos(
     carteira: str | None = None,
     data_inicial: str | None = None,
     data_final: str | None = None,
 ) -> dict[str, Any]:
     """Recupera os proventos (dividendos, JCP, etc.) recebidos.
-
-    Args:
-        carteira: ID ou nome da carteira.
-        data_inicial: Data inicial no formato YYYY-MM-DD.
-        data_final: Data final no formato YYYY-MM-DD.
-
-    Returns:
-        Dict with ``success`` and either ``data`` or ``error``.
+    ...
     """
     return obter_proventos(
         carteira=carteira,
@@ -187,56 +143,62 @@ def obter_proventos_tool(
 
 
 @server.tool()
-def obter_ativos_tool() -> dict[str, Any]:
+def obter_ativos() -> dict[str, Any]:
     """Lista todos os ativos disponiveis no sistema.
-
-    Returns:
-        Dict with ``success`` and either ``data`` or ``error``.
+    ...
     """
     return obter_ativos()
 
 
 @server.tool()
-def obter_ativos_detalhes_tool(ticker: str) -> dict[str, Any]:
+def obter_ativos_detalhes(ticker: str) -> dict[str, Any]:
     """Recupera detalhes de um ativo especifico pelo ticker.
-
-    Args:
-        ticker: Ticker do ativo (ex: PETR4).
-
-    Returns:
-        Dict with ``success`` and either ``data`` or ``error``.
+    ...
     """
     return obter_ativos_detalhes(ticker=ticker)
 
 
 @server.tool()
-def obter_corretoras_tool() -> dict[str, Any]:
+def obter_corretoras() -> dict[str, Any]:
     """Lista todas as corretoras cadastradas.
-
-    Returns:
-        Dict with ``success`` and either ``data`` or ``error``.
+    ...
     """
     return obter_corretoras()
 
 
 @server.tool()
-def obter_estrategias_tool() -> dict[str, Any]:
+def obter_estrategias() -> dict[str, Any]:
     """Lista todas as estrategias de investimento.
-
-    Returns:
-        Dict with ``success`` and either ``data`` or ``error``.
+    ...
     """
     return obter_estrategias()
 
 
 @server.tool()
-def obter_subestrategias_tool() -> dict[str, Any]:
+def obter_subestrategias() -> dict[str, Any]:
     """Lista todas as subestrategias de investimento.
-
-    Returns:
-        Dict with ``success`` and either ``data`` or ``error``.
+    ...
     """
     return obter_subestrategias()
+
+
+def _print_help() -> None:
+    help_text = """DLP Invest MCP
+==============
+Instalação rápida:
+  uvx dlp-invest-mcp
+
+Configuração do MCP:
+  Veja README.md para exemplos em Cursor, Gemini e OpenCode.
+
+Doctor:
+  dlp-invest-mcp doctor
+
+Ajuda geral:
+  dlp-invest-mcp --help
+"""
+    sys.stdout.write(help_text)
+    sys.stdout.flush()
 
 
 def main() -> None:
@@ -245,8 +207,24 @@ def main() -> None:
     This is the entry point used by ``uvx dlp-invest-mcp`` and
     ``python -m dlp_invest_mcp``.
     """
+    # Process special args FIRST, before anything else
+    if len(sys.argv) > 1:
+        arg = sys.argv[1]
+        if arg in ("--help", "-h"):
+            _print_help()
+            sys.exit(0)
+        elif arg == "doctor":
+            logger.info("Doctor check not implemented yet.")
+            sys.stdout.flush()
+            sys.exit(0)
+
     logger.info("Starting DLPInvest MCP server v%s", __version__)
-    asyncio.run(server.run_stdio_async())
+    try:
+        asyncio.run(server.run_stdio_async())
+    except KeyboardInterrupt:
+        logger.info("Servidor interrompido pelo usuário. Encerrando...")
+        sys.stdout.flush()
+        sys.stderr.flush()
 
 
 if __name__ == "__main__":
