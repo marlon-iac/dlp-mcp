@@ -35,6 +35,3 @@ Thumbs.db
 
 # Cursor
 .cursor/
-
-# Lock files (not versioned)
-uv.lock
