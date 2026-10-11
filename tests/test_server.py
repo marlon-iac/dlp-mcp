@@ -14,6 +14,8 @@ def test_server_lists_tools() -> None:
     root = Path(__file__).resolve().parents[1]
     env = dict(os.environ)
     env["DLP_INVEST_API_TOKEN"] = "DLP-test"
+    # Ensure src/ is on PYTHONPATH so python -m dlp_invest_mcp works
+    env["PYTHONPATH"] = str(root / "src") + os.pathsep + env.get("PYTHONPATH", "")
 
     initialize = {
         "jsonrpc": "2.0",
@@ -43,30 +45,41 @@ def test_server_lists_tools() -> None:
         proc.stdin.write(json.dumps(msg) + "\n")
         proc.stdin.flush()
 
+    responses: list[dict] = []
+    stderr_captured = []
     try:
         send(initialize)
         send(initialized)
         send(list_tools)
 
-        responses: list[dict] = []
         assert proc.stdout is not None
-        for _ in range(2):
+        # Read lines. We expect 2 JSON responses (for id=1 and id=2)
+        for _ in range(5):
             line = proc.stdout.readline()
             if not line:
                 break
             line = line.strip()
             if line:
                 responses.append(json.loads(line))
+                # Stop if we got the second response
+                if responses[-1].get("id") == 2:
+                    break
     finally:
         if proc.stdin:
             proc.stdin.close()
         proc.terminate()
         try:
-            proc.wait(timeout=5)
+            _, stderr = proc.communicate(timeout=5)
+            stderr_captured.append(stderr)
         except subprocess.TimeoutExpired:
             proc.kill()
+            _, stderr = proc.communicate()
+            stderr_captured.append(stderr)
 
-    list_response = next(r for r in responses if r.get("id") == 2)
+    list_response = next((r for r in responses if r.get("id") == 2), None)
+    assert list_response is not None, (
+        f"Could not find response with id=2. Responses: {responses}. Stderr: {stderr_captured}"
+    )
     assert "result" in list_response, f"Unexpected response: {list_response}"
     tools = list_response["result"]["tools"]
     names = {t["name"] for t in tools}

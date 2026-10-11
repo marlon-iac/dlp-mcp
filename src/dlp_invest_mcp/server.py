@@ -7,14 +7,14 @@ Logging goes to **stderr**; stdout is reserved for JSON-RPC.
 
 from __future__ import annotations
 
-import os
-# Força o uv a usar cópias em vez de hardlinks no Windows, evitando o erro de nuvem/partições (os error 396)
-os.environ.setdefault("UV_LINK_MODE", "copy")
-
 import asyncio
 import logging
+import os
 import sys
 from typing import Any
+
+# Força o uv a usar cópias em vez de hardlinks no Windows, evitando o erro de nuvem/partições (os error 396)
+os.environ.setdefault("UV_LINK_MODE", "copy")
 
 from mcp.server.mcpserver import MCPServer
 
@@ -251,4 +251,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
