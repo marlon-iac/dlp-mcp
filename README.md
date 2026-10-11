@@ -56,7 +56,7 @@ Copie o exemplo abaixo para o arquivo de configuração do seu IDE e substitua `
 
 ---
 
-## Ferramentas Disponíveis
+## Tools Disponíveis
 
 O assistente de IA terá acesso automático a 11 ferramentas financeiras:
 
@@ -71,6 +71,25 @@ O assistente de IA terá acesso automático a 11 ferramentas financeiras:
 - `obter_corretoras`
 - `obter_estrategias`
 - `obter_subestrategias`
+
+---
+
+## 🎯 Exemplos de Perguntas
+
+| Pergunta | Descrição |
+|----------|------------|
+| "Qual é minha posição atual na DLPInvest?" | Obtém a posição atual do usuário na carteira |
+| "Mostre minhas operações recentes" | Lista as operações realizadas na conta |
+| "Qual é a rentabilidade da minha carteira?" | Mostra o desempenho financeiro da carteira |
+| "Gere um extrato detalhado" | Produz um extrato financeiro completo |
+| "Quais corretoras estou usando?" | Lista as corretoras associadas à conta |
+| "O que são as minhas estratégias atuais?" | Mostra as estratégias definidas pelo usuário |
+| "Detalhe meu ativo mais valioso" | Fornece informações detalhadas sobre o ativo principal |
+| "Calcule meu retorno anualizado" | Calcula métricas de retorno financeiro |
+| "Mostre os subsistemas ativos" | Lista todos os subsistemas disponíveis |
+| "Qual é o valor total da minha carteira?" | Somatório de todos os ativos |
+
+Essas perguntas são apenas exemplos — o MCP suporta até 11 tools diferentes. Cada uma pode ser adaptada conforme as necessidades específicas.
 
 ---
 
