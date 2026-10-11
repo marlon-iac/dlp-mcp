@@ -87,7 +87,7 @@ def obter_posicao(carteira: str | None = None) -> dict[str, Any]:
     """Recupera a posicao atual dos ativos na carteira.
     ...
     """
-    return obter_posicao(carreira=carteira)
+    return obter_posicao(carteira=carteira)
 
 
 @server.tool()
