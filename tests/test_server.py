@@ -2,24 +2,33 @@
 
 from __future__ import annotations
 
+import asyncio
 import importlib
 import json
 import os
 import subprocess
 import sys
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from unittest.mock import Mock
+from threading import Thread
 
 import pytest
 
 from dlp_invest_mcp.config import settings
 
 
-def _run_server(access_mode: str, methods: list[dict]) -> list[dict]:
+def _run_server(
+    access_mode: str,
+    methods: list[dict],
+    api_base_url: str | None = None,
+    api_token: str = "",
+) -> list[dict]:
     root = Path(__file__).resolve().parents[1]
     env = dict(os.environ)
-    env["DLP_INVEST_API_TOKEN"] = ""
+    env["DLP_INVEST_API_TOKEN"] = api_token
     env["DLP_INVEST_ACCESS_MODE"] = access_mode
+    if api_base_url is not None:
+        env["DLP_INVEST_API_BASE_URL"] = api_base_url
     # Ensure src/ is on PYTHONPATH so python -m dlp_invest_mcp works
     env["PYTHONPATH"] = str(root / "src") + os.pathsep + env.get("PYTHONPATH", "")
 
@@ -121,110 +130,93 @@ def test_server_lists_tools_according_to_access_mode() -> None:
     assert set(write_names) == expected_read | {"adicionar_operacoes"}
 
 
-def test_registered_tools_dispatch_to_their_implementations() -> None:
-    """All registered tools reach their implementation without recursion."""
-    names, _ = _tool_list("write")
-    responses = _run_server(
-        "write",
-        [
-            {
-                "jsonrpc": "2.0",
-                "id": index + 2,
-                "method": "tools/call",
-                "params": {
-                    "name": name,
-                    "arguments": (
-                        {"ticker": "PETR4"}
-                        if name == "obter_ativos_detalhes"
-                        else {"operacoes": []}
-                        if name == "adicionar_operacoes"
-                        else {}
-                    ),
-                },
-            }
-            for index, name in enumerate(names)
-        ],
-    )
-
-    calls = [response for response in responses if response.get("id", 0) >= 2]
-    assert len(calls) == len(names)
-    assert all("Token de API nao configurado" in str(response) for response in calls), calls
-
-
-def test_server_handlers_delegate_to_tool_implementations(
+def test_registered_tools_dispatch_to_their_implementations(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Each registered wrapper forwards its arguments to the matching tool."""
-    monkeypatch.setattr(settings, "access_mode", "write")
-    handlers = importlib.import_module("dlp_invest_mcp.server")
-    handlers = importlib.reload(handlers)
+    """MCP calls reach the corresponding API route using a local HTTP fixture."""
+    requests: list[dict] = []
 
-    cases = [
-        (
-            "obter_operacoes",
-            "_obter_operacoes",
-            {},
-            {
-                "carteira": None,
-                "status": None,
-                "data_inicial": None,
-                "data_final": None,
-                "limite": 100,
-                "offset": 0,
-            },
-        ),
-        ("obter_carteira", "_obter_carteira", {}, {}),
-        ("obter_posicao", "_obter_posicao", {"carteira": "principal"}, {"carteira": "principal"}),
-        (
-            "obter_rentabilidade",
-            "_obter_rentabilidade",
-            {"data_inicial": "2025-01-01"},
-            {"carteira": None, "data_inicial": "2025-01-01", "data_final": None},
-        ),
-        (
-            "obter_extrato",
-            "_obter_extrato",
-            {"limite": 5},
-            {"carteira": None, "data_inicial": None, "data_final": None, "limite": 5, "offset": 0},
-        ),
-        (
-            "obter_proventos",
-            "_obter_proventos",
-            {},
-            {"carteira": None, "data_inicial": None, "data_final": None},
-        ),
-        ("obter_ativos", "_obter_ativos", {}, {}),
-        (
-            "obter_ativos_detalhes",
-            "_obter_ativos_detalhes",
-            {"ticker": "PETR4"},
-            {"ticker": "PETR4"},
-        ),
-        ("obter_corretoras", "_obter_corretoras", {}, {}),
-        ("obter_estrategias", "_obter_estrategias", {}, {}),
-        ("obter_subestrategias", "_obter_subestrategias", {}, {}),
-        (
-            "adicionar_operacoes",
-            "_adicionar_operacoes",
-            {"operacoes": [{"ticker": "PETR4"}]},
-            {
-                "operacoes": [{"ticker": "PETR4"}],
-                "carteira": None,
-                "calc": True,
-                "return_option": False,
-                "validar_duplicadas": False,
-            },
-        ),
-    ]
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self) -> None:
+            self._respond()
+
+        def do_POST(self) -> None:
+            self._respond()
+
+        def _respond(self) -> None:
+            length = int(self.headers.get("Content-Length", "0"))
+            body = json.loads(self.rfile.read(length)) if length else None
+            requests.append(
+                {
+                    "method": self.command,
+                    "path": self.path,
+                    "body": body,
+                    "authorization": self.headers.get("Authorization"),
+                }
+            )
+            response = json.dumps(
+                {"method": self.command, "path": self.path, "body": body}
+            ).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(response)))
+            self.end_headers()
+            self.wfile.write(response)
+
+        def log_message(self, format: str, *args: object) -> None:
+            pass
+
+    api = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+    thread = Thread(target=api.serve_forever, daemon=True)
+    thread.start()
+    api_base_url = f"http://127.0.0.1:{api.server_port}"
+
+    monkeypatch.setattr(settings, "access_mode", "read")
+    monkeypatch.setattr(settings, "api_base_url", api_base_url)
+    monkeypatch.setattr(settings, "api_token", "DLP-test-token")
+    server_module = importlib.import_module("dlp_invest_mcp.server")
+    server_module = importlib.reload(server_module)
 
     try:
-        for wrapper_name, implementation_name, arguments, expected_arguments in cases:
-            implementation = Mock(return_value={"success": True})
-            monkeypatch.setattr(handlers, implementation_name, implementation)
 
-            assert getattr(handlers, wrapper_name)(**arguments) == {"success": True}
-            implementation.assert_called_once_with(**expected_arguments)
-            implementation.reset_mock()
+        async def exercise_registered_tools() -> list[tuple[str, dict]]:
+            registered_tools = await server_module.server.list_tools()
+            results = []
+            for registered_tool in registered_tools:
+                arguments = (
+                    {"ticker": "PETR4"} if registered_tool.name == "obter_ativos_detalhes" else {}
+                )
+                result = await server_module.server.call_tool(registered_tool.name, arguments)
+                results.append((registered_tool.name, result.model_dump(by_alias=True)))
+            return results
+
+        results = asyncio.run(exercise_registered_tools())
     finally:
+        api.shutdown()
+        api.server_close()
+        thread.join(timeout=5)
         monkeypatch.undo()
-        importlib.reload(handlers)
+        importlib.reload(server_module)
+
+    expected_paths = {
+        "obter_operacoes": "/operacoes?limite=100&offset=0",
+        "obter_carteira": "/carteira",
+        "obter_posicao": "/posicao",
+        "obter_rentabilidade": "/rentabilidade",
+        "obter_extrato": "/extrato?limite=100&offset=0",
+        "obter_proventos": "/proventos",
+        "obter_ativos": "/ativos",
+        "obter_ativos_detalhes": "/ativos/PETR4",
+        "obter_corretoras": "/corretoras",
+        "obter_estrategias": "/estrategias",
+        "obter_subestrategias": "/subestrategias",
+    }
+    assert len(requests) == len(expected_paths)
+    assert all(request["method"] == "GET" for request in requests)
+    assert all(request["authorization"] == "DLP-test-token" for request in requests)
+
+    assert len(results) == len(expected_paths)
+    for tool_name, response in results:
+        data = response["structuredContent"]["data"]
+        assert data["path"] == expected_paths[tool_name], tool_name
+        assert data["method"] == "GET", tool_name
