@@ -160,6 +160,26 @@ def test_make_request_connection_error(_token: None) -> None:
     assert "boom" in result["message"]
 
 
+def test_make_request_empty_success_body_is_handled(_token: None) -> None:
+    """Successful responses with no body should not crash the client."""
+
+    class _EmptyBodyResponse:
+        def __enter__(self) -> "_EmptyBodyResponse":
+            return self
+
+        def __exit__(self, *args: object) -> None:
+            return None
+
+        def read(self) -> bytes:
+            return b""
+
+    with patch("urllib.request.urlopen", return_value=_EmptyBodyResponse()):
+        result = http.make_request("/carteira")
+
+    assert result["success"] is True
+    assert result["data"] == {}
+
+
 def test_make_request_filters_none_params(_token: None) -> None:
     """None params are filtered before building the query string."""
     captured: dict = {}

@@ -4,13 +4,13 @@
 ![Python](https://img.shields.io/pypi/pyversions/dlp-invest-mcp)
 ![License](https://img.shields.io/pypi/l/dlp-invest-mcp)
 
-Servidor MCP (Model Context Protocol) que expõe a sua carteira da **DLPInvest** como ferramentas para assistentes de IA — Claude Desktop, Cursor, Claude Code, Windsurf e qualquer cliente compatível com MCP.
+Servidor MCP que expõe as integrações da **DLPInvest** como tools para assistentes de IA compatíveis com MCP.
 
 ---
 
 ## ⚠️ Pré-requisito
 
-Antes de configurar o MCP, certifique-se de ter o `**uv**` instalado.
+Antes de configurar o MCP, certifique-se de ter o `uv` instalado.
 
 📖 Veja como instalar: [https://docs.astral.sh/uv/getting-started/installation/](https://docs.astral.sh/uv/getting-started/installation/)
 
@@ -18,23 +18,10 @@ Antes de configurar o MCP, certifique-se de ter o `**uv**` instalado.
 
 ## ⚡ Como usar
 
-### Instalação
-
-**PowerShell:**
-```powershell
-uvx dlp-invest-mcp
-```
-
-**Linux/macOS:**
-```bash
-uvx dlp-invest-mcp
-```
-
 ### Configurar o MCP
 
-Copie o exemplo abaixo para o arquivo de configuração do seu IDE e substitua `DLP-seu-token-aqui`.
+Copie o exemplo abaixo para o arquivo de configuração do seu IDE e substitua `DLP-seu-token-aqui` pelo seu token. Com o `uv` instalado, a IDE executa `uvx dlp-invest-mcp` ao iniciar o MCP; na primeira execução, o `uvx` baixa e executa o pacote automaticamente.
 
-#### Cursor (`.cursor/mcp.json`)
 ```json
 {
   "mcpServers": {
@@ -55,21 +42,22 @@ Copie o exemplo abaixo para o arquivo de configuração do seu IDE e substitua `
 
 ## 🛠️ Tools Disponíveis
 
-O assistente de IA terá acesso às tools financeiras de consulta e, no modo `write`,
-à tool de escrita `adicionar_operacoes`:
+* Read:
 
-- `obter_operacoes`
-- `obter_carteira`
-- `obter_posicao`
-- `obter_rentabilidade`
-- `obter_extrato`
-- `obter_proventos`
-- `obter_ativos`
-- `obter_ativos_detalhes`
-- `obter_corretoras`
-- `obter_estrategias`
-- `obter_subestrategias`
-- `adicionar_operacoes`
+  * `obter_operacoes`
+  * `obter_carteira`
+  * `obter_posicao`
+  * `obter_rentabilidade`
+  * `obter_extrato`
+  * `obter_proventos`
+  * `obter_ativos`
+  * `obter_ativos_detalhes`
+  * `obter_corretoras`
+  * `obter_estrategias`
+  * `obter_subestrategias`
+
+* Write:
+  * `adicionar_operacoes`
 
 ---
 
@@ -99,46 +87,6 @@ O assistente de IA terá acesso às tools financeiras de consulta e, no modo `wr
 - **`DLP_INVEST_ACCESS_MODE=write`** (padrão) - Habilita as tools mutáveis implementadas. Atualmente, `adicionar_operacoes` envia operações para `POST /operacoes`.
 
 Os valores não diferenciam maiúsculas de minúsculas e espaços nas pontas são ignorados. Valores diferentes de `read` e `write` impedem a inicialização do servidor.
-
-### Exemplos de configuração
-
-#### Modo read via ambiente de shell
-
-```bash
-# PowerShell
-$env:DLP_INVEST_ACCESS_MODE="read"
-uvx dlp-invest-mcp
-
-# Linux/macOS
-export DLP_INVEST_ACCESS_MODE="read"
-uvx dlp-invest-mcp
-```
-
-#### Modo write (padrão)
-
-```bash
-# Sem a variável ou definida como write
-uvx dlp-invest-mcp
-# ou
-export DLP_INVEST_ACCESS_MODE="write"
-uvx dlp-invest-mcp
-```
-
----
-
-## 🛠️ Como desinstalar
-
-Para remover o servidor MCP, basta executar o comando:
-
-```bash
-uv tool uninstall dlp-invest-mcp
-```
-
-Ou, se instalado via `uvx` diretamente:
-
-```bash
-uv tool remove dlp-invest-mcp
-```
 
 ---
 

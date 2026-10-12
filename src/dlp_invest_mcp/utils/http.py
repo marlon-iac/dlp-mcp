@@ -87,7 +87,8 @@ def make_request(
     try:
         with urllib.request.urlopen(req, timeout=settings.request_timeout_seconds) as resp:
             body = resp.read().decode("utf-8")
-            return {"success": True, "data": json.loads(body)}
+            payload = json.loads(body) if body and body.strip() else {}
+            return {"success": True, "data": payload}
     except urllib.error.HTTPError as exc:
         message = None
         try:
