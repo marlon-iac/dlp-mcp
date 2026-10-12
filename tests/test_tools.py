@@ -12,6 +12,7 @@ from unittest.mock import patch
 import pytest
 
 from dlp_invest_mcp.tools import (
+    adicionar_operacoes,
     obter_ativos,
     obter_ativos_detalhes,
     obter_carteira,
@@ -172,3 +173,43 @@ def test_make_request_filters_none_params(_token: None) -> None:
     assert result["success"] is True
     assert "status=aberta" in captured["url"]
     assert "carteira" not in captured["url"]
+
+
+def test_adicionar_operacoes_sends_post_json_body(_token: None) -> None:
+    """Write tool sends its payload as a POST body and keeps query options."""
+    captured: dict = {}
+
+    def fake_urlopen(req, timeout=None):  # noqa: ANN001
+        captured["request"] = req
+        return _FakeResponse({"created": 1})
+
+    operations = [{"ticker": "PETR4", "quantidade": 10}]
+    with patch("urllib.request.urlopen", side_effect=fake_urlopen):
+        result = adicionar_operacoes(
+            operations,
+            carteira="principal",
+            calc=False,
+            validar_duplicadas=True,
+        )
+
+    request = captured["request"]
+    assert result["success"] is True
+    assert request.get_method() == "POST"
+    assert request.full_url.endswith(
+        "/operacoes?carteira=principal&calc=False&return_option=False&validar_duplicadas=True"
+    )
+    assert json.loads(request.data) == operations
+    assert request.get_header("Authorization") == "DLP-test-token"
+
+
+def test_write_request_is_blocked_in_read_mode(
+    _token: None, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Read mode blocks a write before opening a network connection."""
+    monkeypatch.setattr(http.settings, "access_mode", "read")
+    with patch("urllib.request.urlopen") as urlopen:
+        result = adicionar_operacoes([{"ticker": "PETR4"}])
+
+    assert result["success"] is False
+    assert "modo leitura" in result["error"]
+    urlopen.assert_not_called()

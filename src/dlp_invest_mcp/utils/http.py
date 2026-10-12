@@ -7,6 +7,7 @@ All requests go through :func:`make_request`, which:
 - respects the ``DLP_INVEST_ACCESS_MODE`` setting to block write operations
 - supports GET, POST, PUT, DELETE methods
 """
+
 from __future__ import annotations
 
 import json
@@ -36,15 +37,17 @@ def make_request(
     url: str,
     params: dict[str, Any] | None = None,
     method: str = "GET",
+    json_body: Any | None = None,
 ) -> dict[str, Any]:
     """Perform a request against the DLPInvest API.
-    
+
     Args:
         url: Path or absolute URL. If relative, joined to ``settings.api_base_url``.
         params: Optional query-string parameters. ``None`` values are filtered out.
         method: HTTP method. Use "GET" for read operations, "POST"/"PUT"/"DELETE" for writes.
             When ``DLP_INVEST_ACCESS_MODE=read``, write methods are blocked.
-    
+        json_body: Optional JSON value to send as the request body.
+
     Returns:
         A dict with ``success`` boolean. On success, contains ``data`` with the
         decoded JSON body. On failure, contains ``error`` and optionally ``message``.
@@ -73,9 +76,12 @@ def make_request(
     if not full_url.startswith("http"):
         full_url = f"{settings.api_base_url}{full_url}"
 
+    data = json.dumps(json_body).encode("utf-8") if json_body is not None else None
     req = urllib.request.Request(  # noqa: S310 - URL is controlled/configurable
         full_url,
+        data=data,
         headers=_build_headers(),
+        method=method.upper(),
     )
 
     try:

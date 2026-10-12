@@ -47,7 +47,6 @@ def adicionar_operacoes(
     calc: bool = True,
     return_option: bool = False,
     validar_duplicadas: bool = False,
-    authorization: str | None = "Authorization",
 ) -> dict[str, Any]:
     """Adiciona operacoes ao sistema DLPInvest.
 
@@ -59,7 +58,6 @@ def adicionar_operacoes(
         calc: Se deve calcular o resultado (query parameter, default: true).
         return_option: Se deve retornar opcao de retorno (query parameter, default: false).
         validar_duplicadas: Se deve validar duplicatas (query parameter, default: false).
-        authorization: Token de autorizacao no header (header parameter, default: "Authorization").
 
     Returns:
         Dict with ``success`` and either ``data`` or ``error``.
@@ -73,5 +71,5 @@ def adicionar_operacoes(
             "return_option": return_option,
             "validar_duplicadas": validar_duplicadas,
         },
-        json=operacoes,
+        json_body=operacoes,
     )

@@ -4,10 +4,11 @@ Uses the official ``mcp`` SDK (MCPServer) over stdio.
 All tools are registered with ``@server.tool()``.
 Logging goes to **stderr**; stdout is reserved for JSON-RPC.
 """
+
 from __future__ import annotations
+
 import asyncio
 import logging
-import os
 import sys
 from typing import Any
 
@@ -15,21 +16,43 @@ from mcp.server.mcpserver import MCPServer
 
 from dlp_invest_mcp import __version__
 from dlp_invest_mcp.config import settings
-from dlp_invest_mcp.utils.http import make_request
 from dlp_invest_mcp.tools import (
-    obter_ativos,
-    obter_ativos_detalhes,
-    obter_carteira,
-    obter_corretoras,
-    obter_estrategias,
-    obter_extrato,
-    obter_operacoes,
-    obter_posicao,
-    obter_proventos,
-    obter_rentabilidade,
-    obter_subestrategias,
+    adicionar_operacoes as _adicionar_operacoes,
 )
-
+from dlp_invest_mcp.tools import (
+    obter_ativos as _obter_ativos,
+)
+from dlp_invest_mcp.tools import (
+    obter_ativos_detalhes as _obter_ativos_detalhes,
+)
+from dlp_invest_mcp.tools import (
+    obter_carteira as _obter_carteira,
+)
+from dlp_invest_mcp.tools import (
+    obter_corretoras as _obter_corretoras,
+)
+from dlp_invest_mcp.tools import (
+    obter_estrategias as _obter_estrategias,
+)
+from dlp_invest_mcp.tools import (
+    obter_extrato as _obter_extrato,
+)
+from dlp_invest_mcp.tools import (
+    obter_operacoes as _obter_operacoes,
+)
+from dlp_invest_mcp.tools import (
+    obter_posicao as _obter_posicao,
+)
+from dlp_invest_mcp.tools import (
+    obter_proventos as _obter_proventos,
+)
+from dlp_invest_mcp.tools import (
+    obter_rentabilidade as _obter_rentabilidade,
+)
+from dlp_invest_mcp.tools import (
+    obter_subestrategias as _obter_subestrategias,
+)
+from dlp_invest_mcp.utils.http import make_request
 
 # ---------------------------------------------------------------------------
 # Logging: stderr only (stdout is the JSON-RPC channel)
@@ -67,7 +90,7 @@ def obter_operacoes(
     """Recupera a lista de operacoes do sistema DLPInvest.
     ...
     """
-    return obter_operacoes(
+    return _obter_operacoes(
         carteira=carteira,
         status=status,
         data_inicial=data_inicial,
@@ -78,12 +101,12 @@ def obter_operacoes(
 
 
 @server.tool()
-def obter_carteira(carteira: str | None = None) -> dict[str, Any]:
+def obter_carteira() -> dict[str, Any]:
     """Recupera a posicao atual dos ativos na carteira.
 
     ...
     """
-    return obter_posicao(carteira=carteira)
+    return _obter_carteira()
 
 
 @server.tool()
@@ -91,7 +114,7 @@ def obter_posicao(carteira: str | None = None) -> dict[str, Any]:
     """Recupera a posicao atual dos ativos na carteira.
     ...
     """
-    return obter_posicao(carteira=carteira)
+    return _obter_posicao(carteira=carteira)
 
 
 @server.tool()
@@ -103,7 +126,7 @@ def obter_rentabilidade(
     """Recupera a rentabilidade da carteira em um periodo.
     ...
     """
-    return obter_rentabilidade(
+    return _obter_rentabilidade(
         carteira=carteira,
         data_inicial=data_inicial,
         data_final=data_final,
@@ -121,7 +144,7 @@ def obter_extrato(
     """Recupera o extrato financeiro da carteira.
     ...
     """
-    return obter_extrato(
+    return _obter_extrato(
         carteira=carteira,
         data_inicial=data_inicial,
         data_final=data_final,
@@ -139,7 +162,7 @@ def obter_proventos(
     """Recupera os proventos (dividendos, JCP, etc.) recebidos.
     ...
     """
-    return obter_proventos(
+    return _obter_proventos(
         carteira=carteira,
         data_inicial=data_inicial,
         data_final=data_final,
@@ -151,7 +174,7 @@ def obter_ativos() -> dict[str, Any]:
     """Lista todos os ativos disponiveis no sistema.
     ...
     """
-    return obter_ativos()
+    return _obter_ativos()
 
 
 @server.tool()
@@ -159,7 +182,7 @@ def obter_ativos_detalhes(ticker: str) -> dict[str, Any]:
     """Recupera detalhes de um ativo especifico pelo ticker.
     ...
     """
-    return obter_ativos_detalhes(ticker=ticker)
+    return _obter_ativos_detalhes(ticker=ticker)
 
 
 @server.tool()
@@ -167,7 +190,7 @@ def obter_corretoras() -> dict[str, Any]:
     """Lista todas as corretoras cadastradas.
     ...
     """
-    return obter_corretoras()
+    return _obter_corretoras()
 
 
 @server.tool()
@@ -175,7 +198,7 @@ def obter_estrategias() -> dict[str, Any]:
     """Lista todas as estrategias de investimento.
     ...
     """
-    return obter_estrategias()
+    return _obter_estrategias()
 
 
 @server.tool()
@@ -183,7 +206,27 @@ def obter_subestrategias() -> dict[str, Any]:
     """Lista todas as subestrategias de investimento.
     ...
     """
-    return obter_subestrategias()
+    return _obter_subestrategias()
+
+
+if settings.access_mode == "write":
+
+    @server.tool()
+    def adicionar_operacoes(
+        operacoes: list[dict[str, Any]],
+        carteira: str | None = None,
+        calc: bool = True,
+        return_option: bool = False,
+        validar_duplicadas: bool = False,
+    ) -> dict[str, Any]:
+        """Adiciona operacoes ao sistema DLPInvest."""
+        return _adicionar_operacoes(
+            operacoes=operacoes,
+            carteira=carteira,
+            calc=calc,
+            return_option=return_option,
+            validar_duplicadas=validar_duplicadas,
+        )
 
 
 def _print_help() -> None:
@@ -219,7 +262,9 @@ def main() -> None:
         elif arg == "doctor":
             # Step 1: Check token presence
             if not settings.api_token:
-                logger.error("API token not configured. Please set DLP_INVEST_API_TOKEN environment variable.")
+                logger.error(
+                    "API token not configured. Please set DLP_INVEST_API_TOKEN environment variable."
+                )
                 sys.stdout.flush()
                 sys.exit(1)
             # Step 2: Check connectivity to the API

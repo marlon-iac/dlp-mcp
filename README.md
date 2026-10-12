@@ -55,7 +55,8 @@ Copie o exemplo abaixo para o arquivo de configuração do seu IDE e substitua `
 
 ## 🛠️ Tools Disponíveis
 
-O assistente de IA terá acesso automático a 12 tools financeiras:
+O assistente de IA terá acesso às tools financeiras de consulta e, no modo `write`,
+à tool de escrita `adicionar_operacoes`:
 
 - `obter_operacoes`
 - `obter_carteira`
@@ -94,8 +95,10 @@ O assistente de IA terá acesso automático a 12 tools financeiras:
 
 ## 🎛️ Modo de Acesso (Read/Write)
 
-- **`DLP_INVEST_ACCESS_MODE=read`** - Modo somente-leitura: apenas tools de GET/read são expostas.
-- **`DLP_INVEST_ACCESS_MODE=write`** (padrão) - Acesso completo: todas as tools incluindo POST/PUT/DELETE estão disponíveis.
+- **`DLP_INVEST_ACCESS_MODE=read`** - Modo somente-leitura: tools mutáveis não são expostas e requisições POST/PUT/DELETE são bloqueadas.
+- **`DLP_INVEST_ACCESS_MODE=write`** (padrão) - Habilita as tools mutáveis implementadas. Atualmente, `adicionar_operacoes` envia operações para `POST /operacoes`.
+
+Os valores não diferenciam maiúsculas de minúsculas e espaços nas pontas são ignorados. Valores diferentes de `read` e `write` impedem a inicialização do servidor.
 
 ### Exemplos de configuração
 
