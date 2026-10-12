@@ -8,7 +8,7 @@ Agent-oriented guide. Objective, imperative, verifiable. Keep under 200 lines.
 Stack: Python 3.10+, `mcp` SDK (MCPServer), `pydantic-settings`, stdlib `urllib`.
 Target users: AI clients (Claude Desktop, Cursor, Claude Code).
 
-- When you need to search docs, use `context7` tools.
+- When you need to search docs, use `context7-mcp` tools.
 - If unsure how to do something, use `gh_grep` to search code examples from GitHub.
 
 ## Issue tracker

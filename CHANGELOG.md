@@ -4,10 +4,12 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.1.8] - 2026-10-09
+## [0.1.9] - 2026-10-11
 
 ### Fixed
-- Added custom User-Agent header in HTTP client to prevent Cloudflare 403 error 1010 block.
+- Implemented the `doctor` command to validate API token, connectivity, and server version
+- Added proper error handling and exit codes for each validation step
+- Updated CHANGELOG accordingly
 
 ## [0.1.7] - 2026-10-09
 

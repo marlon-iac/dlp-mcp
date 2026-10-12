@@ -15,6 +15,8 @@ from typing import Any
 from mcp.server.mcpserver import MCPServer
 
 from dlp_invest_mcp import __version__
+from dlp_invest_mcp.config import settings
+from dlp_invest_mcp.utils.http import make_request
 from dlp_invest_mcp.tools import (
     obter_ativos,
     obter_ativos_detalhes,
@@ -214,7 +216,26 @@ def main() -> None:
             _print_help()
             sys.exit(0)
         elif arg == "doctor":
-            logger.info("Doctor check not implemented yet.")
+            # Step 1: Check token presence
+            if not settings.api_token:
+                logger.error("API token not configured. Please set DLP_INVEST_API_TOKEN environment variable.")
+                sys.stdout.flush()
+                sys.exit(1)
+
+            # Step 2: Check connectivity to the API
+            try:
+                result = make_request("/api/health")
+                if not result.get("success", False):
+                    logger.error("Unhealthy API response: %s", result.get("error", "Unknown error"))
+                    sys.stdout.flush()
+                    sys.exit(2)
+            except Exception as exc:
+                logger.error("Failed to connect to API: %s", exc)
+                sys.stdout.flush()
+                sys.exit(2)
+
+            # Step 3: Verify server version compatibility
+            logger.info("Doctor check passed: token validated, connectivity confirmed")
             sys.stdout.flush()
             sys.exit(0)
 

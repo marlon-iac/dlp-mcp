@@ -93,6 +93,22 @@ Essas perguntas são apenas exemplos — o MCP suporta até 11 tools diferentes.
 
 ---
 
+## 🛠️ Como desinstalar
+
+Para remover o servidor MCP, basta executar o comando:
+
+```bash
+uv tool uninstall dlp-invest-mcp
+```
+
+Ou, se instalado via `uvx` diretamente:
+
+```bash
+uv tool remove dlp-invest-mcp
+```
+
+---
+
 ## Licença
 
 MIT — veja [LICENSE](LICENSE).
