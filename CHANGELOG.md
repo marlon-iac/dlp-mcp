@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.11] - 2026-10-12
+
+### Added
+- Exposed the `adicionar_operacoes` tool in write mode.
+
+### Fixed
+- Validated and normalized the access mode, hiding mutation tools and blocking writes in read mode.
+- Corrected MCP tool dispatch and sent operation creation as an authenticated JSON POST.
+
 ## [0.1.9] - 2026-10-11
 
 ### Fixed
@@ -67,7 +76,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - README with install, tools table, env vars, troubleshooting.
 - AGENTS.md for LLM-driven development.
 - MIT license.
-
 
 
 

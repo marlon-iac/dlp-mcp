@@ -179,7 +179,7 @@ def test_registered_tools_dispatch_to_their_implementations(
 
     try:
 
-        async def exercise_registered_tools() -> list[tuple[str, dict]]:
+        async def exercise_read_tools() -> list[tuple[str, dict]]:
             registered_tools = await server_module.server.list_tools()
             results = []
             for registered_tool in registered_tools:
@@ -190,7 +190,26 @@ def test_registered_tools_dispatch_to_their_implementations(
                 results.append((registered_tool.name, result.model_dump(by_alias=True)))
             return results
 
-        results = asyncio.run(exercise_registered_tools())
+        read_results = asyncio.run(exercise_read_tools())
+
+        monkeypatch.setattr(settings, "access_mode", "write")
+        server_module = importlib.reload(server_module)
+
+        async def create_operations() -> tuple[set[str], dict]:
+            registered_tools = await server_module.server.list_tools()
+            names = {tool.name for tool in registered_tools}
+            result = await server_module.server.call_tool(
+                "adicionar_operacoes",
+                {
+                    "operacoes": [{"ticker": "PETR4", "quantidade": 10}],
+                    "carteira": "principal",
+                    "calc": False,
+                    "validar_duplicadas": True,
+                },
+            )
+            return names, result.model_dump(by_alias=True)
+
+        write_names, write_result = asyncio.run(create_operations())
     finally:
         api.shutdown()
         api.server_close()
@@ -211,12 +230,25 @@ def test_registered_tools_dispatch_to_their_implementations(
         "obter_estrategias": "/estrategias",
         "obter_subestrategias": "/subestrategias",
     }
-    assert len(requests) == len(expected_paths)
-    assert all(request["method"] == "GET" for request in requests)
-    assert all(request["authorization"] == "DLP-test-token" for request in requests)
+    read_requests = requests[:-1]
+    assert len(read_requests) == len(expected_paths)
+    assert all(request["method"] == "GET" for request in read_requests)
+    assert all(request["authorization"] == "DLP-test-token" for request in read_requests)
 
-    assert len(results) == len(expected_paths)
-    for tool_name, response in results:
+    assert len(read_results) == len(expected_paths)
+    for tool_name, response in read_results:
         data = response["structuredContent"]["data"]
         assert data["path"] == expected_paths[tool_name], tool_name
         assert data["method"] == "GET", tool_name
+
+    assert "adicionar_operacoes" in write_names
+    write_data = write_result["structuredContent"]["data"]
+    assert write_data["method"] == "POST"
+    assert write_data["path"] == (
+        "/operacoes?carteira=principal&calc=False&return_option=False&validar_duplicadas=True"
+    )
+    assert write_data["body"] == [{"ticker": "PETR4", "quantidade": 10}]
+    post_request = requests[-1]
+    assert post_request["method"] == "POST"
+    assert post_request["authorization"] == "DLP-test-token"
+    assert post_request["body"] == [{"ticker": "PETR4", "quantidade": 10}]

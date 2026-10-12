@@ -15,9 +15,11 @@ env/
 
 # Testing / coverage
 .pytest_cache/
+.uv_test_cache/
 .coverage
 htmlcov/
 coverage.xml
+pytest-output.txt
 
 # Type checking
 .mypy_cache/
