@@ -1,4 +1,4 @@
-"""Tool: list operations (trades) from DLPInvest."""
+"""Tool: add operations (trades) to DLPInvest."""
 
 from __future__ import annotations
 
@@ -38,4 +38,40 @@ def obter_operacoes(
             "limite": limite,
             "offset": offset,
         },
+    )
+
+
+def adicionar_operacoes(
+    operacoes: list[dict[str, Any]],
+    carteira: str | None = None,
+    calc: bool = True,
+    return_option: bool = False,
+    validar_duplicadas: bool = False,
+    authorization: str | None = "Authorization",
+) -> dict[str, Any]:
+    """Adiciona operacoes ao sistema DLPInvest.
+
+    Esta tool posta dados para o endpoint POST /operacoes.
+
+    Args:
+        operacoes: Lista de operacoes a serem inseridas (estrutura conforme OperacaoInserirModel).
+        carteira: ID da carteira para associar a operaao (query parameter).
+        calc: Se deve calcular o resultado (query parameter, default: true).
+        return_option: Se deve retornar opcao de retorno (query parameter, default: false).
+        validar_duplicadas: Se deve validar duplicatas (query parameter, default: false).
+        authorization: Token de autorizacao no header (header parameter, default: "Authorization").
+
+    Returns:
+        Dict with ``success`` and either ``data`` or ``error``.
+    """
+    return make_request(
+        "/operacoes",
+        method="POST",
+        params={
+            "carteira": carteira,
+            "calc": calc,
+            "return_option": return_option,
+            "validar_duplicadas": validar_duplicadas,
+        },
+        json=operacoes,
     )

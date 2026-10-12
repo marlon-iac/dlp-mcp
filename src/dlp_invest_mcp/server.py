@@ -5,7 +5,6 @@ All tools are registered with ``@server.tool()``.
 Logging goes to **stderr**; stdout is reserved for JSON-RPC.
 """
 from __future__ import annotations
-
 import asyncio
 import logging
 import os
@@ -31,6 +30,7 @@ from dlp_invest_mcp.tools import (
     obter_subestrategias,
 )
 
+
 # ---------------------------------------------------------------------------
 # Logging: stderr only (stdout is the JSON-RPC channel)
 # ---------------------------------------------------------------------------
@@ -40,6 +40,7 @@ logging.basicConfig(
     stream=sys.stderr,
 )
 logger = logging.getLogger(__name__)
+
 
 # ---------------------------------------------------------------------------
 # MCP server
@@ -77,11 +78,12 @@ def obter_operacoes(
 
 
 @server.tool()
-def obter_carteira() -> dict[str, Any]:
-    """Recupera informacoes da carteira do usuario.
+def obter_carteira(carteira: str | None = None) -> dict[str, Any]:
+    """Recupera a posicao atual dos ativos na carteira.
+
     ...
     """
-    return obter_carteira()
+    return obter_posicao(carteira=carteira)
 
 
 @server.tool()
@@ -186,7 +188,7 @@ def obter_subestrategias() -> dict[str, Any]:
 
 def _print_help() -> None:
     help_text = """DLP Invest MCP
-==============
+================================
 Instalação rápida:
   uvx dlp-invest-mcp
 
@@ -205,7 +207,6 @@ Ajuda geral:
 
 def main() -> None:
     """Run the MCP server over stdio.
-
     This is the entry point used by ``uvx dlp-invest-mcp`` and
     ``python -m dlp_invest_mcp``.
     """
@@ -221,7 +222,6 @@ def main() -> None:
                 logger.error("API token not configured. Please set DLP_INVEST_API_TOKEN environment variable.")
                 sys.stdout.flush()
                 sys.exit(1)
-
             # Step 2: Check connectivity to the API
             try:
                 result = make_request("/api/health")
@@ -233,7 +233,6 @@ def main() -> None:
                 logger.error("Failed to connect to API: %s", exc)
                 sys.stdout.flush()
                 sys.exit(2)
-
             # Step 3: Verify server version compatibility
             logger.info("Doctor check passed: token validated, connectivity confirmed")
             sys.stdout.flush()

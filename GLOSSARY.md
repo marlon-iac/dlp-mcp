@@ -16,6 +16,11 @@ Variável de ambiente `DLP_INVEST_API_TOKEN` usada para autenticação na API DL
 
 Mecanismo de link de arquivo usado pelo `uvx`. No Windows/OneDrive pode causar `os error 396`. Solução: `--link-mode copy`, oculto do usuário via script de instalação.
 
-## Doctor
+## Acesso
 
-Comando `dlp-invest-mcp doctor` que valida presença do token, conectividade e versão do servidor, sem modificar estado.
+Modo de acesso ao servidor MCP definido pela variável `DLP_INVEST_ACCESS_MODE`:
+
+- **`read`** - Modo somente-leitura: apenas tools de consulta (GET) estão disponíveis.
+- **`write`** (padrão) - Acesso completo: todas as tools incluindo POST/PUT/DELETE estão disponíveis.
+
+Substitui a antiga `DLP_INVEST_READ_ONLY=1` com uma interface mais amigável usando valores textuais "read" ou "write".

@@ -3,7 +3,6 @@ Uses pydantic-settings so all settings are validated at startup and
 documented in a single place. No required env vars: defaults allow the
 server to start and fail gracefully inside tools when the token is missing.
 """
-
 from __future__ import annotations
 
 import os
@@ -57,6 +56,19 @@ class Settings(BaseSettings):
             "  • Environment variable: UV_LINK_MODE=copy\n"
             "  • Client config (Cursor/Claude): add UV_LINK_MODE to env block\n"
             "  • Shell: Windows: set UV_LINK_MODE=copy, Linux/macOS: export UV_LINK_MODE=copy"
+        ),
+    )
+    # Modo de acesso: define se as tools de escrita (POST/PUT/DELETE) estão disponíveis.
+    # Use "read" para modo somente-leitura (apenas tools GET/read).
+    # Use "write" (ou mantenha vazio/padrão) para acesso completo com tools de escrita.
+    # Defina DLP_INVEST_ACCESS_MODE=no ambiente como "read" ou "write".
+    access_mode: str = Field(
+        default="write",
+        description=(
+            "Modo de acesso ao servidor MCP. "
+            "Use 'read' para modo somente-leitura (apenas tools GET/read). "
+            "Use 'write' para acesso completo com tools POST/PUT/DELETE. "
+            "Defina DLP_INVEST_ACCESS_MODE=read no ambiente para ativar o modo leitura."
         ),
     )
 

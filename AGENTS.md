@@ -4,12 +4,9 @@ Agent-oriented guide. Objective, imperative, verifiable. Keep under 200 lines.
 
 ## Overview
 
-`dlp-invest-mcp` is a stdio MCP server exposing 11 DLPInvest portfolio tools.
+`dlp-invest-mcp` is a stdio MCP server exposing DLPInvest portfolio tools.
 Stack: Python 3.10+, `mcp` SDK (MCPServer), `pydantic-settings`, stdlib `urllib`.
-Target users: AI clients (Claude Desktop, Cursor, Claude Code).
-
-- When you need to search docs, use `context7-mcp` tools.
-- If unsure how to do something, use `gh_grep` to search code examples from GitHub.
+Target users: AI clients (Claude Desktop, Cursor, Claude Code, Windsurf e qualquer cliente compatível com MCP).
 
 ## Issue tracker
 
@@ -93,3 +90,12 @@ uv run dlp-invest-mcp      # run server locally
 - `uv.lock` (managed by `uv sync`)
 - Generated build artifacts in `dist/`
 - `.next/`, `node_modules/` (not part of this project)
+
+## Configuration
+
+To control the MCP server behavior, set the following environment variables:
+
+- **`DLP_INVEST_API_TOKEN`**: Authentication token for accessing the DLPInvest API.
+- **`DLP_INVEST_ACCESS_MODE`**: Access mode for the server. Use `"read"` for read-only mode (only GET requests are available). Use `"write"` (or leave empty/default) for full access with POST/PUT/DELETE. Set to `"read"` or `"write"` as a string value.
+
+When `DLP_INVEST_ACCESS_MODE=read`, only read operations (GET) are exposed. Write operations (POST, PUT, DELETE) are blocked for security purposes. The default is `"write"` for full access.

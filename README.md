@@ -20,8 +20,6 @@ Antes de configurar o MCP, certifique-se de ter o `**uv**` instalado.
 
 ### Instalação
 
-**No Windows**, defina a variável de ambiente `UV_LINK_MODE=copy` para evitar erros de hardlink.
-
 **PowerShell:**
 ```powershell
 $env:UV_LINK_MODE="copy"
@@ -38,8 +36,7 @@ uvx dlp-invest-mcp
 
 Copie o exemplo abaixo para o arquivo de configuração do seu IDE e substitua `DLP-seu-token-aqui`.
 
-### Cursor (`.cursor/mcp.json`)
-
+#### Cursor (`.cursor/mcp.json`)
 ```json
 {
   "mcpServers": {
@@ -47,18 +44,28 @@ Copie o exemplo abaixo para o arquivo de configuração do seu IDE e substitua `
       "command": "uvx",
       "args": ["dlp-invest-mcp"],
       "env": {
-        "DLP_INVEST_API_TOKEN": "DLP-seu-token-aqui"
+        "DLP_INVEST_API_TOKEN": "DLP-seu-token-aqui",
+        "DLP_INVEST_ACCESS_MODE": "read"
       }
     }
   }
 }
 ```
 
+#### OpenCode / CLI
+```bash
+# Modo write (padrão, todas as tools disponíveis)
+uvx dlp-invest-mcp
+
+# Modo read (apenas consulta)
+DLP_INVEST_ACCESS_MODE=read uvx dlp-invest-mcp
+```
+
 ---
 
-## Tools Disponíveis
+## 🛠️ Tools Disponíveis
 
-O assistente de IA terá acesso automático a 11 ferramentas financeiras:
+O assistente de IA terá acesso automático a 12 tools financeiras:
 
 - `obter_operacoes`
 - `obter_carteira`
@@ -71,6 +78,7 @@ O assistente de IA terá acesso automático a 11 ferramentas financeiras:
 - `obter_corretoras`
 - `obter_estrategias`
 - `obter_subestrategias`
+- `adicionar_operacoes` **(nova - POST)**
 
 ---
 
@@ -88,8 +96,69 @@ O assistente de IA terá acesso automático a 11 ferramentas financeiras:
 | "Calcule meu retorno anualizado" | Calcula métricas de retorno financeiro |
 | "Mostre os subsistemas ativos" | Lista todos os subsistemas disponíveis |
 | "Qual é o valor total da minha carteira?" | Somatório de todos os ativos |
+| "Adicione uma nova operação" | **Nova funcionalidade**: adiciona operações via POST /operacoes |
 
-Essas perguntas são apenas exemplos — o MCP suporta até 11 tools diferentes. Cada uma pode ser adaptada conforme as necessidades específicas.
+Essas perguntas são apenas exemplos — o MCP suporta 12 tools diferentes. Cada uma pode ser adaptada conforme as necessidades específicas.
+
+---
+
+## 🎛️ Modo de Acesso (Read/Write)
+
+Em vez da antiga variável `DLP_INVEST_READ_ONLY=1`, agora usa-se a variável `DLP_INVEST_ACCESS_MODE` com valores textuais:
+
+- **`DLP_INVEST_ACCESS_MODE=read`** - Modo somente-leitura: apenas tools de GET/read são expostas. Tools de escrita (POST, PUT, DELETE) ficam inacessíveis.
+- **`DLP_INVEST_ACCESS_MODE=write`** (padrão) - Acesso completo: todas as tools incluindo POST/PUT/DELETE estão disponíveis.
+
+Isso substitui a antiga `DLP_INVEST_READ_ONLY=1` e oferece uma interface mais intuitiva para o usuário configurar no IDE.
+
+### Como funciona
+
+O servidor respeita a variável `DLP_INVEST_ACCESS_MODE` no momento do início:
+
+- Quando definido como `read`, as tools de escrita (POST, PUT, DELETE) são bloqueadas e não estão disponíveis para o assistente de IA.
+- Quando definido como `write` ou não definido (padrão), todas as tools estão disponíveis sem restrições.
+
+### Exemplos de configuração
+
+#### Modo read via ambiente de shell
+
+```bash
+# PowerShell
+$env:DLP_INVEST_ACCESS_MODE="read"
+uvx dlp-invest-mcp
+
+# Linux/macOS
+export DLP_INVEST_ACCESS_MODE="read"
+uvx dlp-invest-mcp
+```
+
+#### Modo write (padrão)
+
+```bash
+# Sem a variável ou definida como write
+uvx dlp-invest-mcp
+# ou
+export DLP_INVEST_ACCESS_MODE="write"
+uvx dlp-invest-mcp
+```
+
+---
+
+## 📘 Modo de Leitura-Only
+
+> **Note:** Esta seção foi substituída pela seção "Modo de Acesso (Read/Write)" acima. A variável `DLP_INVEST_READ_ONLY=1` ainda funciona para compatibilidade, mas recomenda-se usar `DLP_INVEST_ACCESS_MODE=read`.
+
+Para configurações de MCP que desejam apenas consultar dados, sem permitir modificações, defina a variável de ambiente:
+
+```bash
+DLP_INVEST_READ_ONLY=1
+```
+
+Quando ativado, apenas tools de leitura (GET) são expostas. Tools de escrita (POST, PUT, DELETE) ficam inacessíveis. Isso é útil para:
+
+- Configurações de MCP que querem apenas consultar dados
+- Ambientes analíticos que não devem modificar dados
+- Segurança: impedir escritas acidentais
 
 ---
 

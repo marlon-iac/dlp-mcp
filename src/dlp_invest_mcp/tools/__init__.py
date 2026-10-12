@@ -1,8 +1,6 @@
 """Tool modules for the DLPInvest MCP server.
-
 Each module exposes one tool function decorated with ``@mcp.tool()``.
 """
-
 from dlp_invest_mcp.tools.ativos import obter_ativos, obter_ativos_detalhes
 from dlp_invest_mcp.tools.carteira import obter_carteira
 from dlp_invest_mcp.tools.corretoras import obter_corretoras
