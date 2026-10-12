@@ -22,5 +22,3 @@ Modo de acesso ao servidor MCP definido pela variável `DLP_INVEST_ACCESS_MODE`:
 
 - **`read`** - Modo somente-leitura: apenas tools de consulta (GET) estão disponíveis.
 - **`write`** (padrão) - Acesso completo: todas as tools incluindo POST/PUT/DELETE estão disponíveis.
-
-Substitui a antiga `DLP_INVEST_READ_ONLY=1` com uma interface mais amigável usando valores textuais "read" ou "write".
