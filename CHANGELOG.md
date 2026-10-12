@@ -4,6 +4,14 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.12] - 2026-10-12
+
+### Changed
+- Clarified that configuring the MCP with `uvx` does not require a separate installation step.
+
+### Fixed
+- Handled successful HTTP responses with an empty body.
+
 ## [0.1.11] - 2026-10-12
 
 ### Added
@@ -76,7 +84,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - README with install, tools table, env vars, troubleshooting.
 - AGENTS.md for LLM-driven development.
 - MIT license.
-
 
 
 

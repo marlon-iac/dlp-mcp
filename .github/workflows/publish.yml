@@ -21,10 +21,62 @@ jobs:
           enable-cache: true
 
       - name: Set up Python
-        run: uv python install
+        run: uv python install 3.13
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Validate release version
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          uv run --no-project --python 3.13 python - <<'PY'
+          import os
+          import tomllib
+          from pathlib import Path
+
+          project = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
+          project_version = project["project"]["version"]
+          package_version = Path("src/dlp_invest_mcp/__init__.py").read_text()
+          expected_tag = f"v{project_version}"
+          if os.environ["TAG_NAME"] != expected_tag:
+              raise SystemExit(f"Tag must be {expected_tag}, got {os.environ['TAG_NAME']}")
+          if f'__version__ = "{project_version}"' not in package_version:
+              raise SystemExit("Package version does not match pyproject.toml")
+          PY
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Check formatting
+        run: uv run ruff format --check .
+
+      - name: Type check
+        run: uv run mypy src
+
+      - name: Run tests
+        run: uv run pytest
 
       - name: Build distribution
         run: uv build
+
+      - name: Verify PyPI description matches README
+        run: |
+          uv run --no-project --python 3.13 python - <<'PY'
+          import zipfile
+          from pathlib import Path
+
+          readme = Path("README.md").read_text(encoding="utf-8").strip()
+          wheel = next(Path("dist").glob("dlp_invest_mcp-*.whl"))
+          with zipfile.ZipFile(wheel) as archive:
+              metadata_path = next(
+                  path for path in archive.namelist() if path.endswith(".dist-info/METADATA")
+              )
+              metadata = archive.read(metadata_path)
+          description = metadata.split(b"\n\n", 1)[1].decode("utf-8").strip()
+          if description != readme:
+              raise SystemExit("Built package description does not match README.md")
+          PY
 
       - name: Publish to PyPI (Trusted Publishing)
         run: uv publish

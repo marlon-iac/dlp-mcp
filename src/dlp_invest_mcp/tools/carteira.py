@@ -1,6 +1,7 @@
 """Tool: retrieve the user's portfolio metadata."""
 
 from __future__ import annotations
+
 from typing import Any
 
 from dlp_invest_mcp.utils.http import make_request

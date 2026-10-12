@@ -164,7 +164,7 @@ def test_make_request_empty_success_body_is_handled(_token: None) -> None:
     """Successful responses with no body should not crash the client."""
 
     class _EmptyBodyResponse:
-        def __enter__(self) -> "_EmptyBodyResponse":
+        def __enter__(self) -> _EmptyBodyResponse:
             return self
 
         def __exit__(self, *args: object) -> None:

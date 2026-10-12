@@ -67,15 +67,22 @@ uv run dlp-invest-mcp      # run server locally
 ## Pre-release checklist (Mandatory)
 
 1. [ ] Bump version in `src/dlp_invest_mcp/__init__.py` and `pyproject.toml`.
-2. [ ] Update `CHANGELOG.md`.
-3. [ ] **Verify Local Build:**
+2. [ ] Update `CHANGELOG.md` and `README.md` when user-facing documentation changes.
+3. [ ] Run the pre-commit checks and **verify the exact local build**:
    ```bash
+   uv run ruff check .
+   uv run ruff format .
+   uv run mypy src
+   uv run pytest
    uv build
    uvx --from dist/dlp_invest_mcp-<VERSION>-py3-none-any.whl dlp-invest-mcp
-   # Manually verify it starts and responds to JSON-RPC if necessary
+   # Verify the wheel starts and responds to JSON-RPC.
    ```
-4. [ ] `git tag vX.Y.Z && git push --tags`.
-5. [ ] Verify GitHub Actions "Publish" job completes successfully.
+4. [ ] Push the release commit, then create and push the matching tag: `git tag vX.Y.Z && git push origin vX.Y.Z`.
+5. [ ] The tag-triggered Publish workflow checks the version, lint, format, types, tests, and that the built wheel's PyPI description matches `README.md` before publishing.
+6. [ ] Verify the GitHub Actions Publish job succeeds and the PyPI project page shows the new README.
+
+PyPI's project description is taken from the distribution uploaded for a release. A README-only commit does not update PyPI; the updated README appears there when a new version containing it is published.
 
 ## Known pitfalls
 
