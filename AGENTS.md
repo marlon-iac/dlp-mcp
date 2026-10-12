@@ -99,3 +99,17 @@ To control the MCP server behavior, set the following environment variables:
 - **`DLP_INVEST_ACCESS_MODE`**: Access mode for the server. Use `"read"` for read-only mode (only GET requests are available). Use `"write"` (or leave empty/default) for full access with POST/PUT/DELETE. Set to `"read"` or `"write"` as a string value.
 
 When `DLP_INVEST_ACCESS_MODE=read`, only read operations (GET) are exposed. Write operations (POST, PUT, DELETE) are blocked for security purposes. The default is `"write"` for full access.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live in this repo's GitHub Issues; use the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the default triage label vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Use the single-context layout. See `docs/agents/domain.md`.
