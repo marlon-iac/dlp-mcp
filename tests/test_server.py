@@ -80,8 +80,6 @@ def _run_server(
                 if not expected_ids:
                     break
     finally:
-        if proc.stdin:
-            proc.stdin.close()
         proc.terminate()
         try:
             _, stderr = proc.communicate(timeout=5)
